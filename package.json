@@ -1,0 +1,21 @@
+{
+  "name": "snek-lexer",
+  "version": "1.0.0",
+  "description": "Lexer for Snek programming language",
+  "author": "Rauli Laine <rauli.laine@iki.fi>",
+  "license": "MIT",
+  "main": "dist/snek-lexer.js",
+  "module": "dist/snek-lexer.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c -w",
+    "prepare": "yarn run build"
+  },
+  "devDependencies": {
+    "rollup": "^2.33.3",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.29.0",
+    "typescript": "^4.1.2"
+  }
+}
