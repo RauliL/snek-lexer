@@ -20,11 +20,8 @@ export default class State {
     return this.source[this.offset];
   }
 
-  public peek(expectedChar: string, offset: number = 0): boolean {
-    return (
-      this.offset + offset < this.source.length &&
-      this.source[this.offset + offset] === expectedChar
-    );
+  public peek(expectedChar: string): boolean {
+    return !this.eof() && this.source[this.offset] === expectedChar;
   }
 
   public peekRead(expectedChar: string): boolean {
