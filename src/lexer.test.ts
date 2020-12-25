@@ -1,12 +1,9 @@
 import { lex } from './lexer';
 
 describe('lex()', () => {
-  it.each([[''], ['    '], ['\n\n']])(
-    'should return empty array if source code is blank',
-    (input) => {
-      expect(lex(input)).toHaveLength(0);
-    }
-  );
+  it.each([[''], ['    '], ['\n\n']])('should return empty array if source code is blank', input => {
+    expect(lex(input)).toHaveLength(0);
+  });
 
   it('should detect indentation when it increased from previous line', () => {
     const result = lex('  foo');
@@ -86,16 +83,13 @@ describe('lex()', () => {
     expect(result).toHaveProperty([0, 'kind'], expectedKind);
   });
 
-  it.each([['foo'], ['_foo'], ['_foo_500']])(
-    'should be able to lex identifiers',
-    (id) => {
-      const result = lex(id);
+  it.each([['foo'], ['_foo'], ['_foo_500']])('should be able to lex identifiers', id => {
+    const result = lex(id);
 
-      expect(result).toHaveLength(1);
-      expect(result).toHaveProperty([0, 'kind'], 'Id');
-      expect(result).toHaveProperty([0, 'id'], id);
-    }
-  );
+    expect(result).toHaveLength(1);
+    expect(result).toHaveProperty([0, 'kind'], 'Id');
+    expect(result).toHaveProperty([0, 'id'], id);
+  });
 
   it.each([
     ['""', ''],

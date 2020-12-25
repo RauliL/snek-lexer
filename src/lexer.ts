@@ -1,12 +1,6 @@
 import Stack from './stack';
 import State from './state';
-import {
-  IdentifierToken,
-  NumberLiteralToken,
-  StringLiteralToken,
-  Token,
-  TokenKind,
-} from './types';
+import { IdentifierToken, NumberLiteralToken, StringLiteralToken, Token, TokenKind } from './types';
 import { isIdentifierPart, isIdentifierStart, isNumPart } from './utils';
 
 const RESERVED_KEYWORDS = new Map<string, TokenKind>([
@@ -37,9 +31,7 @@ const lexIdentifier = (state: State): Token | IdentifierToken => {
 
   const keyword = RESERVED_KEYWORDS.get(id);
 
-  return keyword != null
-    ? { position, kind: keyword }
-    : { position, kind: 'Id', id };
+  return keyword != null ? { position, kind: keyword } : { position, kind: 'Id', id };
 };
 
 const lexEscapeSequence = (state: State): string => {
@@ -48,7 +40,7 @@ const lexEscapeSequence = (state: State): string => {
   if (state.eof()) {
     throw new Error('Unterminated escape sequence');
   }
-  switch (c = state.advance()) {
+  switch ((c = state.advance())) {
     case 'b':
       return '\b';
 
@@ -65,7 +57,7 @@ const lexEscapeSequence = (state: State): string => {
       return '\r';
 
     case '"':
-    case '\'':
+    case "'":
     case '\\':
     case '/':
       return c;
@@ -80,16 +72,11 @@ const lexEscapeSequence = (state: State): string => {
           throw new Error('Illegal Unicode hex escape sequence');
         }
         if (state.current() >= 'A' && state.current() <= 'F') {
-          result =
-            result * 16 +
-            (state.advance().codePointAt(0) - 'A'.codePointAt(0) + 10);
+          result = result * 16 + (state.advance().codePointAt(0) - 'A'.codePointAt(0) + 10);
         } else if (state.current() >= 'a' && state.current() <= 'f') {
-          result =
-            result * 16 +
-            (state.advance().codePointAt(0) - 'a'.codePointAt(0) + 10);
+          result = result * 16 + (state.advance().codePointAt(0) - 'a'.codePointAt(0) + 10);
         } else {
-          result =
-            result * 16 + (state.advance().codePointAt(0) - '0'.codePointAt(0));
+          result = result * 16 + (state.advance().codePointAt(0) - '0'.codePointAt(0));
         }
       }
 
@@ -142,7 +129,7 @@ const lexNumericLiteral = (state: State): NumberLiteralToken => {
     kind = 'Float';
     buffer += '.';
     if (state.eof() || !/^[0-9]$/.test(state.current())) {
-      throw new Error('Missing digits after `.\'');
+      throw new Error("Missing digits after `.'");
     }
     do {
       const c = state.advance();
@@ -158,7 +145,7 @@ const lexNumericLiteral = (state: State): NumberLiteralToken => {
         buffer += state.advance();
       }
       if (state.eof() || !/^[0-9]$/.test(state.current())) {
-        throw new Error('Missing digits after `e\'');
+        throw new Error("Missing digits after `e'");
       }
       do {
         const c = state.advance();
@@ -182,7 +169,7 @@ const lexOperator = (state: State): Token => {
     case '.':
       if (state.peekRead('.')) {
         if (!state.peekRead('.')) {
-          throw new Error('Unexpected `..\'');
+          throw new Error("Unexpected `..'");
         }
         kind = 'Spread';
       } else {
@@ -231,9 +218,7 @@ const lexOperator = (state: State): Token => {
       break;
 
     case '=':
-      kind = state.peekRead('=') ?
-        'Eq' : state.peekRead('>') ?
-        'FatArrow' : 'Assign';
+      kind = state.peekRead('=') ? 'Eq' : state.peekRead('>') ? 'FatArrow' : 'Assign';
       break;
 
     case '-':
@@ -249,20 +234,16 @@ const lexOperator = (state: State): Token => {
       break;
 
     case '<':
-      kind = state.peekRead('<') ?
-        'LeftShift' : state.peekRead('=') ?
-        'Lte' : 'Lt';
+      kind = state.peekRead('<') ? 'LeftShift' : state.peekRead('=') ? 'Lte' : 'Lt';
       break;
 
     case '>':
-      kind = state.peekRead('>') ?
-        'RightShift' : state.peekRead('=') ?
-        'Gte' : 'Gt';
+      kind = state.peekRead('>') ? 'RightShift' : state.peekRead('=') ? 'Gte' : 'Gt';
       break;
 
     case '?':
       if (!state.peekRead('.')) {
-        throw new Error('Unexpected `?\'.');
+        throw new Error("Unexpected `?'.");
       }
       kind = 'ConditionalDot';
       break;
@@ -274,11 +255,7 @@ const lexOperator = (state: State): Token => {
   return { position, kind };
 };
 
-const lexLogicalLine = (
-  state: State,
-  tokens: Token[],
-  indentStack: Stack<number>
-): void => {
+const lexLogicalLine = (state: State, tokens: Token[], indentStack: Stack<number>): void => {
   const position = { ...state.position };
   let indent = 0;
   let separatorCount = 0;
@@ -372,10 +349,7 @@ const lexLogicalLine = (
       ++separatorCount;
       tokens.push({
         position,
-        kind:
-          c === '(' ? 'LeftParen' :
-          c === '[' ? 'LeftBracket' :
-          'LeftBrace'
+        kind: c === '(' ? 'LeftParen' : c === '[' ? 'LeftBracket' : 'LeftBrace',
       });
       continue;
     }
@@ -389,10 +363,7 @@ const lexLogicalLine = (
       }
       tokens.push({
         position,
-        kind:
-          c === ')' ? 'RightParen' :
-          c === ']' ? 'RightBracket' :
-          'RightBrace'
+        kind: c === ')' ? 'RightParen' : c === ']' ? 'RightBracket' : 'RightBrace',
       });
       continue;
     }
@@ -404,7 +375,7 @@ const lexLogicalLine = (
     }
 
     // String literals
-    if (state.peek('"') || state.peek('\'')) {
+    if (state.peek('"') || state.peek("'")) {
       tokens.push(lexStringLiteral(state));
       continue;
     }
