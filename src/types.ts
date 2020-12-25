@@ -3,8 +3,7 @@ export type Position = {
   column: number;
 };
 
-export type TokenKind =
-  // Separators
+export type SeparatorTokenKind =
   | 'Indent'
   | 'Dedent'
   | 'NewLine'
@@ -21,15 +20,11 @@ export type TokenKind =
   | 'Semicolon'
   | 'Arrow'
   | 'FatArrow'
-  | 'Spread'
+  | 'Spread';
 
-  // Literals
-  | 'Id'
-  | 'Int'
-  | 'Float'
-  | 'Str'
+export type LiteralTokenKind = 'Id' | 'Int' | 'Float' | 'Str';
 
-  // Reserved keywords
+export type KeywordTokenKind =
   | 'KeywordAs'
   | 'KeywordBreak'
   | 'KeywordContinue'
@@ -44,9 +39,9 @@ export type TokenKind =
   | 'KeywordReturn'
   | 'KeywordTrue'
   | 'KeywordType'
-  | 'KeywordWhile'
+  | 'KeywordWhile';
 
-  // Operators
+export type OperatorTokenKind =
   | 'Assign'
   | 'Add'
   | 'Sub'
@@ -69,22 +64,35 @@ export type TokenKind =
   | 'LogicalAnd'
   | 'LogicalOr';
 
+export type TokenKind = SeparatorTokenKind | LiteralTokenKind | KeywordTokenKind | OperatorTokenKind;
+
 export type Token = {
   position: Position;
   kind: TokenKind;
 };
 
-export type IdentifierToken = Token & {
+export type SeparatorToken = Token & { kind: SeparatorTokenKind };
+
+export type LiteralToken = Token & { kind: LiteralTokenKind };
+
+export type IdentifierToken = LiteralToken & {
   kind: 'Id';
   id: string;
 };
 
-export type NumberLiteralToken = Token & {
+export type NumberLiteralToken = LiteralToken & {
   kind: 'Float' | 'Int';
   value: string;
 };
+
+export type FloatLiteralToken = NumberLiteralToken & { kind: 'Float' };
+export type IntLiteralToken = NumberLiteralToken & { kind: 'Int' };
 
 export type StringLiteralToken = Token & {
   kind: 'Str';
   value: string;
 };
+
+export type KeywordTokem = Token & { kind: KeywordTokenKind };
+
+export type OperatorToken = Token & { kind: OperatorTokenKind };
