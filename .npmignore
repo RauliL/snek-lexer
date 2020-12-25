@@ -1,4 +1,5 @@
 /.editorconfig
+/.github
 /example.html
 /node_modules
 /rollup.config.js
