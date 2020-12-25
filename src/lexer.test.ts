@@ -32,55 +32,43 @@ describe('lex()', () => {
     expect(result).toHaveProperty([5, 'kind'], 'NewLine');
   });
 
+  it.each([['('], [')'], ['['], [']'], ['{'], ['}'], ['.'], ['?.'], [','], [':'], [';'], ['->'], ['=>'], ['...']])(
+    'should be able to lex separators',
+    input => {
+      const result = lex(input);
+
+      expect(result).toHaveLength(1);
+      expect(result).toHaveProperty([0, 'kind'], input);
+    },
+  );
+
   it.each([
-    ['(', 'LeftParen'],
-    [')', 'RightParen'],
-    ['[', 'LeftBracket'],
-    [']', 'RightBracket'],
-    ['{', 'LeftBrace'],
-    ['}', 'RightBrace'],
-    ['.', 'Dot'],
-    ['?.', 'ConditionalDot'],
-    [',', 'Comma'],
-    [':', 'Colon'],
-    [';', 'Semicolon'],
-    ['->', 'Arrow'],
-    ['=>', 'FatArrow'],
-    ['...', 'Spread'],
-  ])('should be able to lex separators', (input, expectedKind) => {
+    ['='],
+    ['+'],
+    ['-'],
+    ['*'],
+    ['/'],
+    ['%'],
+    ['&'],
+    ['|'],
+    ['!'],
+    ['~'],
+    ['=='],
+    ['!='],
+    ['<'],
+    ['>'],
+    ['<='],
+    ['>='],
+    ['^'],
+    ['<<'],
+    ['>>'],
+    ['&&'],
+    ['||'],
+  ])('should be able to lex operators', input => {
     const result = lex(input);
 
     expect(result).toHaveLength(1);
-    expect(result).toHaveProperty([0, 'kind'], expectedKind);
-  });
-
-  it.each([
-    ['=', 'Assign'],
-    ['+', 'Add'],
-    ['-', 'Sub'],
-    ['*', 'Mul'],
-    ['/', 'Div'],
-    ['%', 'Mod'],
-    ['&', 'And'],
-    ['|', 'Or'],
-    ['!', 'Not'],
-    ['~', 'BitwiseNot'],
-    ['==', 'Eq'],
-    ['!=', 'Ne'],
-    ['<', 'Lt'],
-    ['>', 'Gt'],
-    ['<=', 'Lte'],
-    ['>=', 'Gte'],
-    ['^', 'BitwiseXor'],
-    ['<<', 'LeftShift'],
-    ['>>', 'RightShift'],
-    ['&&', 'LogicalAnd'],
-    ['||', 'LogicalOr'],
-  ])('should be able to lex operators', (input, expectedKind) => {
-    const result = lex(input);
-
-    expect(result).toHaveLength(1);
-    expect(result).toHaveProperty([0, 'kind'], expectedKind);
+    expect(result).toHaveProperty([0, 'kind'], input);
   });
 
   it.each([['foo'], ['_foo'], ['_foo_500']])('should be able to lex identifiers', id => {

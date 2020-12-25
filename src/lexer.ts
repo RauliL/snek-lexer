@@ -171,81 +171,57 @@ const lexOperator = (state: State): Token => {
         if (!state.peekRead('.')) {
           throw new Error("Unexpected `..'");
         }
-        kind = 'Spread';
+        kind = '...';
       } else {
-        kind = 'Dot';
+        kind = '.';
       }
       break;
 
     case ',':
-      kind = 'Comma';
-      break;
-
     case ':':
-      kind = 'Colon';
-      break;
-
     case ';':
-      kind = 'Semicolon';
-      break;
-
     case '~':
-      kind = 'BitwiseNot';
-      break;
-
     case '^':
-      kind = 'BitwiseXor';
-      break;
-
     case '+':
-      kind = 'Add';
-      break;
-
     case '*':
-      kind = 'Mul';
-      break;
-
     case '/':
-      kind = 'Div';
-      break;
-
     case '%':
-      kind = 'Mod';
+      kind = c;
       break;
 
     case '!':
-      kind = state.peekRead('=') ? 'Ne' : 'Not';
+      kind = state.peekRead('=') ? '!=' : '!';
       break;
 
     case '=':
-      kind = state.peekRead('=') ? 'Eq' : state.peekRead('>') ? 'FatArrow' : 'Assign';
+      kind = state.peekRead('=') ? '==' : state.peekRead('>') ? '=>' : '=';
       break;
 
     case '-':
-      kind = state.peekRead('>') ? 'Arrow' : 'Sub';
+      kind = state.peekRead('>') ? '->' : '-';
       break;
 
     case '&':
-      kind = state.peekRead('&') ? 'LogicalAnd' : 'And';
+      kind = state.peekRead('&') ? '&&' : '&';
       break;
 
     case '|':
-      kind = state.peekRead('|') ? 'LogicalOr' : 'Or';
+      kind = state.peekRead('|') ? '||' : '|';
       break;
 
     case '<':
-      kind = state.peekRead('<') ? 'LeftShift' : state.peekRead('=') ? 'Lte' : 'Lt';
+      kind = state.peekRead('<') ? '<<' : state.peekRead('=') ? '<=' : '<';
       break;
 
     case '>':
-      kind = state.peekRead('>') ? 'RightShift' : state.peekRead('=') ? 'Gte' : 'Gt';
+      kind = state.peekRead('>') ? '>>' : state.peekRead('=') ? '>=' : '>';
       break;
 
     case '?':
       if (!state.peekRead('.')) {
         throw new Error("Unexpected `?'.");
       }
-      kind = 'ConditionalDot';
+      kind = '?.';
       break;
 
     default:
@@ -344,26 +320,26 @@ const lexLogicalLine = (state: State, tokens: Token[], indentStack: Stack<number
     // Separators.
     if (state.peek('(') || state.peek('[') || state.peek('{')) {
       const position = { ...state.position };
-      const c = state.advance();
+      const c = state.advance() as '(' | '[' | '{';
 
       ++separatorCount;
       tokens.push({
         position,
-        kind: c === '(' ? 'LeftParen' : c === '[' ? 'LeftBracket' : 'LeftBrace',
+        kind: c,
       });
       continue;
     }
 
     if (state.peek(')') || state.peek(']') || state.peek('}')) {
       const position = { ...state.position };
-      const c = state.advance();
+      const c = state.advance() as ')' | ']' | '}';
 
       if (separatorCount > 0) {
         --separatorCount;
       }
       tokens.push({
         position,
-        kind: c === ')' ? 'RightParen' : c === ']' ? 'RightBracket' : 'RightBrace',
+        kind: c,
       });
       continue;
     }
