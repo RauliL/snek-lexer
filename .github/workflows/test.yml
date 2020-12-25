@@ -19,6 +19,7 @@ jobs:
       - name: Yarn install, build and test
         run: |
           yarn install
+          yarn run style:check
           yarn run build
           yarn run test
         env:
